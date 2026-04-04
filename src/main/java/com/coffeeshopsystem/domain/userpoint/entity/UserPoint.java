@@ -1,6 +1,8 @@
 package com.coffeeshopsystem.domain.userpoint.entity;
 
 import com.coffeeshopsystem.common.entity.BaseEntity;
+import com.coffeeshopsystem.common.exception.ErrorEnum;
+import com.coffeeshopsystem.common.exception.ServiceException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,5 +31,13 @@ public class UserPoint extends BaseEntity {
 
     public void charge(BigDecimal chargeAmount) {
         this.balance = this.balance.add(chargeAmount);
+    }
+
+    public void pay(BigDecimal orderAmount) {
+        if (balance.compareTo(orderAmount) < 0) {
+            throw new ServiceException(ErrorEnum.INSUFFICIENT_BALANCE);
+        }
+
+        this.balance = this.balance.subtract(orderAmount);
     }
 }

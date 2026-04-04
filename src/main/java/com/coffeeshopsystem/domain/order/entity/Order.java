@@ -23,17 +23,17 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private BigDecimal totalPrice;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+
     @JoinColumn(name = "user_id", nullable = false)
-    private UserPoint userPoint;
+    private Long userId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "menu_id", nullable = false)
     private Menu menu;
 
-    public Order(BigDecimal totalPrice, UserPoint userPoint, Menu menu) {
+    public Order(BigDecimal totalPrice, Long userId, Menu menu) {
         this.totalPrice = totalPrice;
-        this.userPoint = userPoint;
+        this.userId = userId;
         this.menu = menu;
     }
 }

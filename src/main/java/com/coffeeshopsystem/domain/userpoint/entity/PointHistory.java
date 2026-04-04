@@ -41,7 +41,7 @@ public class PointHistory extends BaseEntity {
     public static PointHistory use(BigDecimal amount, UserPoint userPoint) {
         PointHistory pointHistory = new PointHistory();
 
-        pointHistory.amount = amount;
+        pointHistory.amount = amount.negate();
         pointHistory.userPoint = userPoint;
         pointHistory.type = PointHistoryType.USE;
         return pointHistory;
