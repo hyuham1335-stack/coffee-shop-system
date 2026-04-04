@@ -1,0 +1,22 @@
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  application:
+    name: coffee-shop
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/coffee?rewriteBatchedStatements=true
+    username: root
+    password: 12345678
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+    show-sql: true
