@@ -23,6 +23,10 @@ public class UserPoint extends BaseEntity {
     @Column(nullable = false)
     private BigDecimal balance;
 
+    @Version
+    private Long version;
+
+
     // 기존 사용자가 아닐때 생성자로 생성
     public UserPoint(Long userId) {
         this.userId = userId;

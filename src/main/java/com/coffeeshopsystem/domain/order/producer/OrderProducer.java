@@ -20,6 +20,7 @@ public class OrderProducer {
 
         LocalDate now = LocalDate.now();
 
+        // 인기 랭킹 측정을 위해 판매 수량 기록
         rankingService.increaseMenuRanking(event.getMenuId(), now);
     }
 }

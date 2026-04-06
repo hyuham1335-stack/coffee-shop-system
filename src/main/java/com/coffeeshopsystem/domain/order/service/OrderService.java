@@ -37,6 +37,7 @@ public class OrderService {
                 () -> new ServiceException(ErrorEnum.MENU_NOT_FOUND)
         );
 
+        // 비관적락 사용
         userPointService.usePoint(userId, menu.getPrice());
 
         Order order = orderRepository.save(
@@ -47,6 +48,7 @@ public class OrderService {
                 new Payment(menu.getPrice(), LocalDateTime.now(), order)
         );
 
+        // 데이터 수집 플랫폼에 전송할 데이터 생성
         eventPublisher.publishEvent(
                 new OrderCompletedEvent(
                         order.getId(),

@@ -8,6 +8,7 @@ import com.coffeeshopsystem.domain.userpoint.entity.UserPoint;
 import com.coffeeshopsystem.domain.userpoint.repository.PointHistoryRepository;
 import com.coffeeshopsystem.domain.userpoint.repository.UserPointRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +25,7 @@ public class UserPointService {
     public ChargerUserPointResponse chargeUserPoint(Long userId, BigDecimal chargeAmount) {
 
         UserPoint userPoint = userPointRepository.findById(userId)
-                .orElseGet(() -> userPointRepository.save(new UserPoint(userId)));
+                .orElseGet(() -> createIfAbsent(userId));
 
         userPoint.charge(chargeAmount);
 
@@ -35,10 +36,24 @@ public class UserPointService {
         return ChargerUserPointResponse.of(userPoint);
     }
 
+    // 포인트 충전 중복 요청 발생 시
+    // 기존 유저가 아닐 경우 pk 중복 문제 처리
+    private UserPoint createIfAbsent(Long userId) {
+
+        try {
+            return userPointRepository.save(new UserPoint(userId));
+        } catch (DataIntegrityViolationException e) {
+            return userPointRepository.findById(userId).orElseThrow(
+                    () -> e
+            );
+        }
+    }
+
     @Transactional
     public void usePoint(Long userId, BigDecimal payAmount) {
 
-        UserPoint userPoint = userPointRepository.findById(userId).orElseThrow(
+        // 비관적락 사용
+        UserPoint userPoint = userPointRepository.findByIdWithLock(userId).orElseThrow(
                 () -> new ServiceException(ErrorEnum.USER_NOT_FOUND)
         );
 
